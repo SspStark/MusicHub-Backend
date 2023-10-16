@@ -13,6 +13,9 @@ const port = process.env.PORT || 3005;
 const userRoutes=require('./routes/userRoutes');
 app.use('/',userRoutes)
 
+const audioRoutes = require('./routes/audioRoutes');
+app.use('/', audioRoutes);
+
 const initializeDBandServer = async () => {
     try {
       await mongoose.connect(dbURI, {
@@ -30,6 +33,9 @@ const initializeDBandServer = async () => {
   };
 
 initializeDBandServer();
+
+
+
 
 
 
