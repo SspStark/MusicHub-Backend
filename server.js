@@ -3,9 +3,14 @@ const mongoose = require('mongoose');
 const cors=require('cors')
 require('dotenv').config()
 
+const corsOptions = {
+  origin: 'https://sspmusichub.netlify.app/home',
+  optionsSuccessStatus: 200,  // Some legacy browsers choke on 204
+};
+
 const app=express()
 app.use(express.json())
-app.use(cors())
+app.use(cors(corsOptions))
 
 const dbURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3005;
