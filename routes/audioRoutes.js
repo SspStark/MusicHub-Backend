@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const audioController = require('../controllers/audioController');
 
-router.get('/audios', audioController.getAllAudios);
-router.post('/add-audio', audioController.addAudio);
+router.get('/audio', audioController.getAllAudios);
+router.post('/audio', audioController.addAudio);
 
 module.exports = router;

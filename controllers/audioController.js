@@ -3,7 +3,13 @@ const Audio = require('../models/audioModel');
 const getAllAudios = async (req, res) => {
   try {
     const audios = await Audio.find();
-    res.json(audios);
+    const audioData = audios.map(audio => {
+      return {
+        title: audio.title,
+        audioUrl: `http://localhost:3005/audio/${encodeURIComponent(audio.audio_file)}`
+      };
+    });
+    res.json(audioData);
   } catch (error) {
     console.error('Error fetching audios:', error);
     res.status(500).json({ error: error.message });
@@ -11,10 +17,10 @@ const getAllAudios = async (req, res) => {
 };
 
 const addAudio = async (req, res) => {
-  const { title, song_file } = req.body;
+  const { title, audio_file } = req.body;
 
   try {
-    const audio = new Audio({ title, audio_file });
+    const audio = new Audio({ title, audio_file});
     await audio.save();
     res.status(201).json({ msg: 'Audio added successfully'});
   } catch (error) {

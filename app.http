@@ -28,5 +28,15 @@ Content-Type: application/json
 }
 ###
 
-GET http://localhost:3005/users
+GET http://localhost:3005/audio
+###
+
+POST http://localhost:3005/audio
+Content-Type: application/json
+
+{
+  "title":"Bloody Mary",
+  "audio_file": "Lady_Gaga_-_Bloody_Mary.m4a"
+}
+
 ###

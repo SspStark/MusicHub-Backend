@@ -10,11 +10,14 @@ app.use(cors())
 const dbURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3005;
 
+app.use('/audio', express.static('audios'));
+
 const userRoutes=require('./routes/userRoutes');
 app.use('/',userRoutes)
 
 const audioRoutes = require('./routes/audioRoutes');
 app.use('/', audioRoutes);
+
 
 const initializeDBandServer = async () => {
     try {
