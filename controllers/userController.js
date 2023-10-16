@@ -1,52 +1,7 @@
-const express = require('express')
-const bcrypt=require('bcrypt')
-const jwt=require('jsonwebtoken')
-const mongoose = require('mongoose');
-const cors=require('cors')
-require('dotenv').config()
+const User=require('../models/userModel');
+const bcrypt = require('bcrypt');
 
-const app=express()
-app.use(express.json())
-app.use(cors())
-
-const dbURI = process.env.MONGODB_URI;
-const port = process.env.PORT;
-
-const initializeDBandServer = async () => {
-    try {
-      await mongoose.connect(dbURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-  
-      app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-      });
-    } catch (error) {
-      console.log(`DB Error: ${error.message}`);
-      process.exit(1);
-    }
-  };
-
-initializeDBandServer();
-
-  // Define the user schema
-  const userSchema = new mongoose.Schema(
-    {
-      email: String,
-      username: {
-        type: String,
-        unique: true,  // Enforce uniqueness for the username
-        required: true
-      },
-      password: String
-    }
-  );
-  
-  // Create a Mongoose model for the user
-  const User = mongoose.model('User', userSchema);
-
-  function isPasswordStrong(password){
+const isPasswordStrong=(password)=>{
     // Using regular expressions(regex) to validate password
     const length=/.{8,}/;            // At least 8 characters
     const capital=/[A-Z]/;           // At least one uppercase letter
@@ -63,7 +18,7 @@ initializeDBandServer();
     return(isLengthValid && hasCapital && hasLowerCase && hasSpecialChar && hasNumber);
   }
 
-  app.post('/sign-up', async (request, response) => {
+  const signUp= async (request, response) => {
     const { email, username, password } = request.body;
   
     // Check for empty details
@@ -103,9 +58,9 @@ initializeDBandServer();
       console.error('Error during sign-up', error);
       return response.status(500).json({ error: 'Internal server error' });
     }
-  });
-  
-  app.post('/login', async (request, response) => {
+  };
+
+  const login=async (request, response) => {
     const { username, password } = request.body;
   
     try {
@@ -125,9 +80,9 @@ initializeDBandServer();
       console.error('Error during login', error);
       return response.status(500).json({ error: 'Internal server error' });
     }
-  });
+  };
 
-  app.put('/change-password', async (request, response) => {
+  const changePassword=async (request, response) => {
     const { username, oldPassword, newPassword } = request.body;
   
     try {
@@ -160,14 +115,20 @@ initializeDBandServer();
       console.error('Error during password update', error);
       return response.status(500).json({ error: 'Internal server error' });
     }
-  });
-  
-  app.get('/users',async(request,response)=>{
-    try{
-      const users=await User.find()
-      response.json(users)
-    }catch(error){
+  };
+
+  const getUsers = async (request, response) => {
+    try {
+      const users = await User.find();
+      response.json(users);
+    } catch (error) {
       console.error('Error fetching users:', error);
-      response.status(500).json({error:'Internal server error'});
+      response.status(500).json({ error: 'Internal server error' });
     }
-  })
+  };
+
+  module.exports = {
+    signUp,
+    login,
+    changePassword,getUsers
+  };
