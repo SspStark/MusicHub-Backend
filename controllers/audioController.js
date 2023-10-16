@@ -6,7 +6,7 @@ const getAllAudios = async (req, res) => {
     const audioData = audios.map(audio => {
       return {
         title: audio.title,
-        audioUrl: `http://localhost:3005/audio/${encodeURIComponent(audio.audio_file)}`
+        audioUrl: `https://localhost:3005/audio/${encodeURIComponent(audio.audio_file)}`
       };
     });
     res.json(audioData);
