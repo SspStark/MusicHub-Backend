@@ -4,7 +4,7 @@ const cors=require('cors')
 require('dotenv').config()
 
 const corsOptions = {
-  origin: 'https://sspmusichub.netlify.app',
+  origin: '*',
   optionsSuccessStatus: 200,  // Some legacy browsers choke on 204
 };
 
