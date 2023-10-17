@@ -1,21 +1,18 @@
 const express = require('express')
 const mongoose = require('mongoose');
 const cors=require('cors')
+const path=require('path')
 require('dotenv').config()
-
-const corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200,  // Some legacy browsers choke on 204
-};
 
 const app=express()
 app.use(express.json())
-app.use(cors(corsOptions))
+app.use(cors())
+
+const audioFolderPath = path.join(__dirname, 'audios');
+app.use('/audio', express.static(audioFolderPath));
 
 const dbURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3005;
-
-app.use('/audio', express.static('audios'));
 
 const userRoutes=require('./routes/userRoutes');
 app.use('/',userRoutes)
