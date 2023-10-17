@@ -35,8 +35,8 @@ POST http://localhost:3005/audio
 Content-Type: application/json
 
 {
-  "title":"Bloody Mary",
-  "audio_file": "Lady_Gaga_-_Bloody_Mary.m4a"
+  "title":"The Box",
+  "audio_file": "Roddy_Ricch_-_The_Box.mp3"
 }
 
 ###
