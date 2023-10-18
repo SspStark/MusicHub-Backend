@@ -5,6 +5,7 @@ const getAllAudios = async (req, res) => {
     const audios = await Audio.find();
     const audioData = audios.map(audio => {
       return {
+        id:audio._id,
         title: audio.title,
         audioUrl: `https://${req.headers.host}/audio/${encodeURIComponent(audio.audio_file)}`
       };
