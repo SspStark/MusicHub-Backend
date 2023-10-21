@@ -1,5 +1,7 @@
 const User=require('../models/userModel');
 const bcrypt = require('bcrypt');
+const jwt=require('jsonwebtoken')
+require('dotenv').config()
 
 const isPasswordStrong=(password)=>{
     // Using regular expressions(regex) to validate password
@@ -69,9 +71,12 @@ const isPasswordStrong=(password)=>{
       if (user) {
         const isPasswordMatched = await bcrypt.compare(password, user.password);
         if (isPasswordMatched) {
-          response.status(200).json({ msg: 'Login successful' });
+          const payload={username:username};
+          const secretKey=process.env.JWT_SECRET;
+          const jwtToken=jwt.sign(payload,secretKey);
+          response.status(200).json({ jwt_token:jwtToken });
         } else {
-          response.status(400).json({ error: 'Username and password do not match' });
+          response.status(400).json({ error: "Username and password did't match" });
         }
       } else {
         response.status(404).json({ error: 'Username not found' });
