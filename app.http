@@ -35,8 +35,10 @@ POST http://localhost:3005/audio
 Content-Type: application/json
 
 {
-  "title":"The Box",
-  "audio_file": "Roddy_Ricch_-_The_Box.mp3"
+  "title":"Cheap Thrills",
+  "artist":"Sia",
+  "image_url":"sia_image",
+  "audio_file": "Sia - Cheap Thrills  ft. Sean Paul.mp3"
 }
 
 ###

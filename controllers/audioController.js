@@ -7,6 +7,8 @@ const getAllAudios = async (req, res) => {
       return {
         id:audio._id,
         title: audio.title,
+        artist:audio.artist,
+        image_url:audio.image_url,
         audioUrl: `https://${req.headers.host}/audio/${encodeURIComponent(audio.audio_file)}`
       };
     });
@@ -18,10 +20,10 @@ const getAllAudios = async (req, res) => {
 };
 
 const addAudio = async (req, res) => {
-  const { title, audio_file } = req.body;
+  const { title, artist, image_url, audio_file } = req.body;
 
   try {
-    const audio = new Audio({ title, audio_file});
+    const audio = new Audio({ title, artist, image_url, audio_file});
     await audio.save();
     res.status(201).json({ msg: 'Audio added successfully'});
   } catch (error) {

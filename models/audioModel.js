@@ -5,6 +5,14 @@ const audioSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  artist: {
+    type: String,
+    required: true
+  },
+  image_url: {
+    type: String,
+    required: true
+  },
   audio_file: {
     type: String, // Assuming a file path or reference to the song file
     required: true
