@@ -33,11 +33,19 @@ const isPasswordStrong=(password)=>{
         return response.status(400).json({error:"Invalid email"});
     }
 
+    const userEmail=email.trim().toLowerCase()
+
+    // try {
+    //   const response = await zeroBounce.validateEmail(userEmail);
+    //   console.log('email verified success')
+    // } catch (error) {
+    //   console.error(error);
+    // }
+
     // Check for password strength
     if (!isPasswordStrong(password)){
         return response.status(400).json({error:'password must be at least 8 characters and one capital,lower,special character & number'});
     }
-    
   
     try {
       const existingUser = await User.findOne({ username });
@@ -46,7 +54,7 @@ const isPasswordStrong=(password)=>{
         const hashedPassword = await bcrypt.hash(password, 10);
   
         const newUser = new User({
-          email,
+          email:userEmail,
           username,
           password: hashedPassword,
         });
