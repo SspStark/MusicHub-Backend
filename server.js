@@ -11,7 +11,7 @@ app.use(cors())
 const audioFolderPath = path.join(__dirname, 'audios');
 app.use('/audio', express.static(audioFolderPath));
 
-const dbURI = process.env.MONGODB_URI;
+const dbURL = process.env.MONGODB_URL;
 const port = process.env.PORT || 3005;
 
 const userRoutes=require('./routes/userRoutes');
@@ -23,7 +23,7 @@ app.use('/', audioRoutes);
 
 const initializeDBandServer = async () => {
     try {
-      await mongoose.connect(dbURI, {
+      await mongoose.connect(dbURL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });

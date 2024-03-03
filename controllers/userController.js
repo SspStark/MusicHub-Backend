@@ -2,8 +2,9 @@ const User=require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
+const axios=require('axios')
 
-const isPasswordStrong=(password)=>{
+  const isPasswordStrong=(password)=>{
     // Using regular expressions(regex) to validate password
     const length=/.{8,}/;            // At least 8 characters
     const capital=/[A-Z]/;           // At least one uppercase letter
@@ -20,34 +21,42 @@ const isPasswordStrong=(password)=>{
     return(isLengthValid && hasCapital && hasLowerCase && hasSpecialChar && hasNumber);
   }
 
+  const validateEmail = async (userEmail) => {
+    try {
+        const api_key = process.env.API_KEY;
+        const url = `https://emailverification.whoisxmlapi.com/api/v3?apiKey=${api_key}&emailAddress=${userEmail}`;
+        const response = await axios.get(url);
+        const data = response.data;
+        console.log(data.smtpCheck)
+        if (data.formatCheck=='false' || data.smtpCheck=='false') {
+            throw new Error("Enter a valid email address");
+        }
+    } catch (error) {
+        console.error(error)
+        throw error; // Re-throwing the error to be handled by the calling function
+    }
+  }
+
   const signUp= async (request, response) => {
     const { email, username, password } = request.body;
   
     // Check for empty details
-    if (email==='' || username===''){
+    if (email=='' || username==''){
         return response.status(400).json({error:"Details shouldn't be empty"});
-    }
-
-    // Check for valid email
-    if (!email.includes('@gmail.com')){
-        return response.status(400).json({error:"Invalid email"});
     }
 
     const userEmail=email.trim().toLowerCase()
 
-    // try {
-    //   const response = await zeroBounce.validateEmail(userEmail);
-    //   console.log('email verified success')
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
-    // Check for password strength
-    if (!isPasswordStrong(password)){
-        return response.status(400).json({error:'password must be at least 8 characters and one capital,lower,special character & number'});
-    }
-  
     try {
+      // Validate email
+      await validateEmail(userEmail)
+
+      // Check for password strength
+      if (!isPasswordStrong(password)){
+          return response.status(400).json({error:'password must be at least 8 characters and one capital,lower,special character & number'});
+      }
+  
+    
       const existingUser = await User.findOne({ username });
   
       if (!existingUser) {
@@ -55,7 +64,7 @@ const isPasswordStrong=(password)=>{
   
         const newUser = new User({
           email:userEmail,
-          username,
+          username:username.trim(),
           password: hashedPassword,
         });
   
@@ -65,6 +74,9 @@ const isPasswordStrong=(password)=>{
         response.status(400).json({ error: 'Username already exists' });
       }
     } catch (error) {
+      if (error.message == "Enter a valid email address") {
+        return response.status(400).json({ error: error.message });
+    }
       console.error('Error during sign-up', error);
       return response.status(500).json({ error: 'Internal server error' });
     }
@@ -143,5 +155,6 @@ const isPasswordStrong=(password)=>{
   module.exports = {
     signUp,
     login,
-    changePassword,getUsers
+    changePassword,
+    getUsers
   };
