@@ -39,11 +39,6 @@ const axios=require('axios')
 
   const signUp= async (request, response) => {
     const { email, username, password } = request.body;
-  
-    // Check for empty details
-    if (email=='' || username==''){
-        return response.status(400).json({error:"Details shouldn't be empty"});
-    }
 
     const userEmail=email.trim().toLowerCase()
 
@@ -53,7 +48,7 @@ const axios=require('axios')
 
       // Check for password strength
       if (!isPasswordStrong(password)){
-          return response.status(400).json({error:'password must be at least 8 characters and one capital,lower,special character & number'});
+          return response.status(400).json({error:"password doesn't match requirements"});
       }
   
     
