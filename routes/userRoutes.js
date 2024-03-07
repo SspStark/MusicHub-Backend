@@ -5,7 +5,7 @@ const router=express.Router();
 
 router.post('/sign-up', userController.signUp);
 router.post('/login', userController.login);
-router.put('/change-password', userController.changePassword);
+router.put('/forgot-password', userController.forgotPassword);
 router.get('/users', userController.getUsers);
 
 module.exports = router;

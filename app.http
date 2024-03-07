@@ -2,8 +2,8 @@ POST http://localhost:3005/sign-up
 Content-Type: application/json
 
 {
-  "email":" ssptonystark005@gmail.com",
-  "username": "sspstark",
+  "email":" Ssptonystark005@gmail.com",
+  "username": "Sspstark",
   "password": "Sspmusichub@191916"
 }
 
@@ -13,18 +13,17 @@ POST http://localhost:3005/login
 Content-Type: application/json
 
 {
-  "username": "adam_richard",
-  "password": "Richard$123"
+  "username": " Ssptonystark005@gmail.com",
+  "password": "Sspmusichub@191916"
 }
 ###
 
-PUT http://localhost:3005/change-password
+PUT http://localhost:3005/forgot-password
 Content-Type: application/json
 
 {
-  "username": "adam_richard",
-  "oldPassword": "Richard_567",
-  "newPassword": "Richard$123"
+  "email": "ssptonystark005@gmail.com",
+  "newPassword": "Sspmusichub@191916"
 }
 ###
 

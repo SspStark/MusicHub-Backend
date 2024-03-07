@@ -27,7 +27,6 @@ const axios=require('axios')
         const url = `https://emailverification.whoisxmlapi.com/api/v3?apiKey=${api_key}&emailAddress=${userEmail}`;
         const response = await axios.get(url);
         const data = response.data;
-        console.log(data.smtpCheck)
         if (data.formatCheck=='false' || data.smtpCheck=='false') {
             throw new Error("Enter a valid email address");
         }
@@ -43,15 +42,20 @@ const axios=require('axios')
     const userEmail=email.trim().toLowerCase()
 
     try {
+
+      const existingEmail = await User.findOne({ email:userEmail });
+      if (existingEmail){
+        return response.status(400).json({error:"Email already exists"})
+      }
+
       // Validate email
       await validateEmail(userEmail)
 
       // Check for password strength
       if (!isPasswordStrong(password)){
-          return response.status(400).json({error:"password doesn't match requirements"});
+          return response.status(400).json({error:"Password doesn't match requirements"});
       }
   
-    
       const existingUser = await User.findOne({ username });
   
       if (!existingUser) {
@@ -81,7 +85,7 @@ const axios=require('axios')
     const { username, password } = request.body;
   
     try {
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ $or:[{username},{email:username.trim().toLowerCase()}] });
   
       if (user) {
         const isPasswordMatched = await bcrypt.compare(password, user.password);
@@ -91,10 +95,10 @@ const axios=require('axios')
           const jwtToken=jwt.sign(payload,secretKey);
           response.status(200).json({ jwt_token:jwtToken });
         } else {
-          response.status(400).json({ error: "Username and password did't match" });
+          response.status(400).json({ error: "Invalid username or password" });
         }
       } else {
-        response.status(404).json({ error: 'Username not found' });
+        response.status(404).json({ error: 'User not found' });
       }
     } catch (error) {
       console.error('Error during login', error);
@@ -102,34 +106,29 @@ const axios=require('axios')
     }
   };
 
-  const changePassword=async (request, response) => {
-    const { username, oldPassword, newPassword } = request.body;
-  
+  const forgotPassword=async (request, response) => {
+    const { email, newPassword } = request.body;
+    
+    const userEmail=email.trim().toLowerCase()
+
     try {
       // Check if the user exists
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ email:userEmail });
   
-      if (!user) {
-        return response.status(404).json({ error: 'Username not found' });
-      }
-  
-      // Check if the old password matches the password in the database
-      const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
-  
-      if (isPasswordMatched) {
+      if (user) {
         if (isPasswordStrong(newPassword)) {
           // Hash the new password
           const hashedPassword = await bcrypt.hash(newPassword, 10);
   
           // Update the password in the database
-          await User.updateOne({ username }, { $set: { password: hashedPassword } });
+          await User.updateOne({ email:userEmail }, { $set: { password: hashedPassword } });
   
           response.status(202).json({ msg: 'Password updated successfully' });
         } else {
-          response.status(400).json({ error: 'Password must be at least 8 characters and contain one capital letter, one lowercase letter, one special character, and one number' });
+          response.status(400).json({ error: "Password doesn't match requirements" });
         }
       } else {
-        response.status(400).json({ error: "Username and password didn't match" });
+        response.status(400).json({ error: "Email not found" });
       }
     } catch (error) {
       console.error('Error during password update', error);
@@ -150,6 +149,6 @@ const axios=require('axios')
   module.exports = {
     signUp,
     login,
-    changePassword,
+    forgotPassword,
     getUsers
   };
