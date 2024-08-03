@@ -27,6 +27,7 @@ const axios=require('axios')
         const url = `https://emailverification.whoisxmlapi.com/api/v3?apiKey=${api_key}&emailAddress=${userEmail}`;
         const response = await axios.get(url);
         const data = response.data;
+        console.log(data)
         if (data.formatCheck=='false' || data.smtpCheck=='false') {
             throw new Error("Enter a valid email address");
         }

@@ -2,8 +2,8 @@ POST http://localhost:3005/sign-up
 Content-Type: application/json
 
 {
-  "email":" Ssptonystark005@gmail.com",
-  "username": "Sspstark",
+  "email":"chopparasubhas@gmail.com",
+  "username": "tark",
   "password": "Sspmusichub@191916"
 }
 
